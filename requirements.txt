@@ -1,0 +1,7 @@
+# Dependências principais para Databricks e CI/CD
+pyspark
+mlflow
+databricks-cli
+databricks-sdk
+pytest
+requests
