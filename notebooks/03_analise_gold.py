@@ -9,7 +9,7 @@ from pyspark.sql.functions import count, avg
 
 spark = SparkSession.builder.appName("AnaliseGold").getOrCreate()
 
-df = spark.read.parquet("data/silver/")
+df = spark.read.parquet("/Volumes/workspace/bronze/data/silver/")
 
 # Exemplo de agregação
 # Ajuste os nomes das colunas conforme seu dado
