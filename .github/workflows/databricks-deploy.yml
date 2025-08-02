@@ -41,7 +41,6 @@ jobs:
 
       - name: Configure Databricks CLI for Jobs API 2.1
         run: databricks jobs configure --version=2.1
-
       - name: Deploy notebooks to Databricks
         env:
           DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
@@ -55,7 +54,7 @@ jobs:
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
         run: |
           JOB_NAME="Pipeline Bronze-Silver-Gold-ML"
-          JOB_ID=$(databricks jobs list --output JSON | jq -r ".[] | select(.name==\"$JOB_NAME\") | .job_id")
+          JOB_ID=$(databricks jobs list --output JSON | jq -r ".[] | select(.settings.name==\"$JOB_NAME\") | .job_id")
           if [ -z "$JOB_ID" ]; then
             echo "Criando novo job Databricks..."
             databricks jobs create --json-file job_pipeline.json
