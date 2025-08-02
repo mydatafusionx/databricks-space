@@ -59,3 +59,4 @@ jobs:
           else
             echo "Atualizando job Databricks existente..."
             databricks jobs reset --job-id $JOB_ID --json-file job_pipeline.json
+          fi
