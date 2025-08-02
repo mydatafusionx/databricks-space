@@ -46,6 +46,9 @@ jobs:
         run: |
           databricks workspace import_dir notebooks /Workspace/Projetos/databricks-space --overwrite
 
+      - name: Configure Databricks CLI for Jobs API 2.1
+        run: databricks jobs configure --version=2.1
+
       - name: Deploy job definition (create or update)
         env:
           DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
