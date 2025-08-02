@@ -1,0 +1,57 @@
+{
+  "name": "Pipeline Bronze-Silver-Gold-ML",
+  "tasks": [
+    {
+      "task_key": "bronze",
+      "description": "Ingestão de dados (bronze)",
+      "notebook_task": {
+        "notebook_path": "/Workspace/Projetos/databricks-space/01_ingestao_bronze"
+      },
+      "job_cluster_key": "cluster_etl"
+    },
+    {
+      "task_key": "silver",
+      "description": "Processamento camada silver",
+      "depends_on": [
+        { "task_key": "bronze" }
+      ],
+      "notebook_task": {
+        "notebook_path": "/Workspace/Projetos/databricks-space/02_processamento_silver"
+      },
+      "job_cluster_key": "cluster_etl"
+    },
+    {
+      "task_key": "gold",
+      "description": "Análise camada gold",
+      "depends_on": [
+        { "task_key": "silver" }
+      ],
+      "notebook_task": {
+        "notebook_path": "/Workspace/Projetos/databricks-space/03_analise_gold"
+      },
+      "job_cluster_key": "cluster_etl"
+    },
+    {
+      "task_key": "ml",
+      "description": "Pipeline ML com MLflow",
+      "depends_on": [
+        { "task_key": "gold" }
+      ],
+      "notebook_task": {
+        "notebook_path": "/Workspace/Projetos/databricks-space/04_ml_mlflow"
+      },
+      "job_cluster_key": "cluster_etl"
+    }
+  ],
+  "job_clusters": [
+    {
+      "job_cluster_key": "cluster_etl",
+      "new_cluster": {
+        "spark_version": "13.3.x-scala2.12",
+        "num_workers": 1,
+        "node_type_id": "Standard_DS3_v2"
+      }
+    }
+  ],
+  "max_concurrent_runs": 1
+}

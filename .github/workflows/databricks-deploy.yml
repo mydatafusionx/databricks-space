@@ -26,9 +26,36 @@ jobs:
       - name: Run tests
         run: pytest tests
 
+      - name: Install Databricks CLI and jq
+        run: |
+          pip install databricks-cli
+          sudo apt-get update && sudo apt-get install -y jq
+
+      - name: Configure Databricks CLI
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+        run: |
+          mkdir -p ~/.databricks
+          echo -e "host: $DATABRICKS_HOST\ntoken: $DATABRICKS_TOKEN" > ~/.databricks/config
+
       - name: Deploy notebooks to Databricks
         env:
           DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
         run: |
           databricks workspace import_dir notebooks /Workspace/Projetos/databricks-space --overwrite
+
+      - name: Deploy job definition (create or update)
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+        run: |
+          JOB_NAME="Pipeline Bronze-Silver-Gold-ML"
+          JOB_ID=$(databricks jobs list --output JSON | jq -r ".[] | select(.settings.name==\"$JOB_NAME\") | .job_id")
+          if [ -z "$JOB_ID" ]; then
+            echo "Criando novo job Databricks..."
+            databricks jobs create --json-file job_pipeline.json
+          else
+            echo "Atualizando job Databricks existente..."
+            databricks jobs reset --job-id $JOB_ID --json-file job_pipeline.json
