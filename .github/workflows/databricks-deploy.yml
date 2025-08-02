@@ -52,7 +52,7 @@ jobs:
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
         run: |
           JOB_NAME="Pipeline Bronze-Silver-Gold-ML"
-          JOB_ID=$(databricks jobs list --output JSON | jq -r ".[] | select(.settings.name==\"$JOB_NAME\") | .job_id")
+          JOB_ID=$(databricks jobs list --output JSON | jq -r ".[] | select(.name==\"$JOB_NAME\") | .job_id")
           if [ -z "$JOB_ID" ]; then
             echo "Criando novo job Databricks..."
             databricks jobs create --json-file job_pipeline.json
