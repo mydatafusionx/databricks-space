@@ -39,15 +39,15 @@ jobs:
           mkdir -p ~/.databricks
           echo -e "host: $DATABRICKS_HOST\ntoken: $DATABRICKS_TOKEN" > ~/.databricks/config
 
+      - name: Configure Databricks CLI for Jobs API 2.1
+        run: databricks jobs configure --version=2.1
+
       - name: Deploy notebooks to Databricks
         env:
           DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
         run: |
           databricks workspace import_dir notebooks /Workspace/Projetos/databricks-space --overwrite
-
-      - name: Configure Databricks CLI for Jobs API 2.1
-        run: databricks jobs configure --version=2.1
 
       - name: Deploy job definition (create or update)
         env:
